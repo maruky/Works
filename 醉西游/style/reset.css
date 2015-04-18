@@ -1,0 +1,48 @@
+@charset "utf-8";
+/************清除默认样式************/
+*{ 
+    margin: 0;
+    padding: 0;
+}
+ul, ol{
+    list-style: none;
+}
+a{ 
+    text-decoration: none;
+}
+h1, h2, h3, h4, h5, h6{ 
+    font-size: 1em;
+}
+em, i{ 
+    font-style: normal;
+}
+input, select, textarea{ 
+    outline: none;
+    border: none;
+    background-color: transparent;
+}
+textarea{ 
+    resize: none;
+}
+img{ 
+    border: none;
+    display: block;
+}
+
+/*********通用*********/
+.clearfix:after, .clearfix:before{ 
+    display: table;
+    content: "";
+}
+.clearfix:after{ 
+    clear: both;
+}
+.clearfix{ 
+    *zoom: 1;
+}
+.fl{ 
+    float: left;
+}
+.fr{ 
+    float: right;
+}

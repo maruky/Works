@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+
+        body,ul { margin: 0; padding: 0; }
+        li { list-style: none; }
+
+        .clearfix:after,
+        .clearfix:before{content: "";display: table;}
+        .clearfix:after{clear: both;}
+        .clearfix{*zoom:1;}
+
+        div { width: 440px; margin: 30px auto; }
+        ul { float: left; }
+        li { float: left; width: 100px; height: 100px; border: 10px solid #baac9f; margin-left: -10px; margin-bottom: -10px; background-color: #cbbfb1; text-align: center; font: bold 50px/100px '微软雅黑'; color: #cbbfb1; }
+        .c2 { background-color: #ede3d9; color: #746b62; }
+        .c4 { background-color: #efdfc8; color: #746b62; }
+        .c8 { background-color: #f1b079; color: #fff; }
+        .c16 { background-color: #f59363; color: #fff; }
+        .c32 { background-color: #f47c5f; color: #fff; }
+        .c64 { background-color: #f75e3c; color: #fff; }
+        .c128 { background-color: #eccd71; color: #fff; font-size: 40px; }
+        .c256 { background-color: #eccb63; color: #fff; }
+        .c512 { background-color: #ebc750; color: #fff; }
+        .c1024 { background-color: #ecc441; color: #fff; font-size: 30px; }
+        .c2048 { background-color: #ecc12e; color: #fff; font-size: 30px; }
+
+    </style>
+    <script>
+
+        window.onload = function() {
+
+            var oBox = document.getElementById('box');
+            var oUl = oBox.getElementsByTagName('ul');
+            var aLi = oBox.getElementsByTagName('li');
+            var bOff = false;
+            var arr = [];
+            var arr2 = [];
+
+            for(var i=0; i<oUl.length; i++){
+
+                var aLi2 = oUl[i].getElementsByTagName('li');
+                arr.push(aLi2);
+                arr2[i] = [];
+                for(var j=0; j<aLi2.length; j++){
+
+                    arr2[i][j]=aLi2[j].innerHTML;
+
+                }
+
+            }
+            star();
+
+            document.onkeydown = function(ev){
+
+                var e = ev || event;
+                bOff = false;
+                switch(e.keyCode){
+
+                    case 37:
+                    left();
+                    lmerge();
+                    break;
+
+                    case 38:
+                    top();
+                    tmerge();
+                    break;
+
+                    case 39:
+                    right();
+                    rmerge();
+                    break;
+
+                    case 40:
+                    bottom();
+                    bmerge();
+                    break;
+
+                }
+                if(bOff)
+                    create();
+
+            };
+            console.log(arr);
+
+            function star(){
+
+                var arr = [];
+                var json = {};
+                while( arr.length < 3 ){
+
+                    var iNum = Math.floor( Math.random()*aLi.length );
+                    if( !json[iNum] ){
+
+                        arr.push( iNum );
+                        json[iNum] = 1;
+                    }
+
+                }
+                for( var i=0; i<arr.length; i++ ){
+
+                    aLi[arr[i]].innerHTML = arr2[Math.floor(arr[i]/4)][arr[i]%4] = make();
+                    aLi[arr[i]].className = 'c' + aLi[arr[i]].innerHTML;
+
+                }
+
+            }
+            function make(){
+
+                var a = 3;
+                while( a==3 ){
+
+                    var a = Math.round( Math.random()*2+2 );
+
+                }
+
+                return a;
+
+            }
+            function create(){
+
+                var arr = [];
+                for(var i=0; i<aLi.length; i++){
+
+                    if(aLi[i].innerHTML == 0)
+                        arr.push(aLi[i]);
+
+                }
+                if(arr.length == 0){
+
+                    alert('你已死亡');
+                    return;
+
+                }
+                var iNum = Math.floor( Math.random()*arr.length );
+                arr[iNum].innerHTML = make();
+                arr[iNum].className = 'c' + arr[iNum].innerHTML;
+
+
+            }
+            function left(){
+
+               // setTimeout(function() {
+
+                    for (var i = 0; i < arr.length; i++) {
+
+                        for (var j = 0; j < arr[i].length - 1; j++) {
+
+                            if (arr[i][j].innerHTML == 0 && arr[i][j + 1].innerHTML != 0) {
+
+                                arr[i][j].parentNode.insertBefore(arr[i][j + 1], arr[i][j]);
+                                left();
+                                bOff = true;
+
+                            }
+
+                        }
+
+                    }
+
+               // },100);
+
+            }
+            function right(){
+
+
+                for(var i=0; i<arr.length; i++){
+
+                    for(var j=arr[i].length-1; j>0; j--){
+
+                        if(arr[i][j].innerHTML == 0&&arr[i][j-1].innerHTML !=0){
+
+                            arr[i][j].parentNode.insertBefore(arr[i][j],arr[i][j-1]);
+                            right();
+                            bOff = true;
+
+                        }
+
+                    }
+
+                }
+
+            }
+            function top(){
+
+
+                for(var i=0; i<arr.length-1; i++){
+
+                    for(var j=0; j<arr[i].length; j++){
+
+                        if(arr[i][j].innerHTML == 0&&arr[i+1][j].innerHTML !=0){
+
+                            arr[i][j].innerHTML = arr[i+1][j].innerHTML;
+                            arr[i][j].className = arr[i+1][j].className;
+                            arr[i+1][j].innerHTML = 0;
+                            arr[i+1][j].className = '';
+                            top();
+                            bOff = true;
+
+                        }
+
+                    }
+
+                }
+
+            }
+            function bottom(){
+
+
+                for(var i=arr.length-1; i>0; i--){
+
+                    for(var j=0; j<arr[i].length; j++){
+
+                        if(arr[i][j].innerHTML == 0&&arr[i-1][j].innerHTML !=0){
+
+                            arr[i][j].innerHTML = arr[i-1][j].innerHTML;
+                            arr[i][j].className = arr[i-1][j].className;
+                            arr[i-1][j].innerHTML = 0;
+                            arr[i-1][j].className = '';
+                            bottom();
+                            bOff = true;
+
+                        }
+
+                    }
+
+                }
+
+            }
+            function lmerge(){
+
+                for(var i=0; i<arr.length; i++){
+
+                    for(var j=0; j<arr[i].length-1; j++){
+
+                        if(arr[i][j].innerHTML == arr[i][j+1].innerHTML&&arr[i][j].innerHTML != 0){
+
+                            arr[i][j].innerHTML *= 2;
+                            arr[i][j].className = 'c' + arr[i][j].innerHTML;
+                            arr[i][j+1].innerHTML = 0;
+                            arr[i][j+1].className = '';
+                            left();
+                            bOff = true;
+
+                        }
+
+                    }
+
+                }
+
+            }
+            function rmerge(){
+
+                for(var i=0; i<arr.length; i++){
+
+                    for(var j=arr[i].length-1; j>0; j--){
+
+                        if(arr[i][j].innerHTML == arr[i][j-1].innerHTML&&arr[i][j].innerHTML != 0){
+
+                            arr[i][j-1].innerHTML = 0;
+                            arr[i][j-1].className = '';
+                            arr[i][j].innerHTML *= 2;
+                            arr[i][j].className = 'c' + arr[i][j].innerHTML;
+                            right();
+                            bOff = true;
+
+                        }
+
+                    }
+
+                }
+
+            }
+            function tmerge(){
+
+                for(var i=0; i<arr.length-1; i++){
+
+                    for(var j=0; j<arr[i].length; j++){
+
+                        if(arr[i][j].innerHTML == arr[i+1][j].innerHTML&&arr[i][j].innerHTML != 0){
+
+                            arr[i][j].innerHTML *= 2;
+                            arr[i][j].className = 'c' + arr[i][j].innerHTML;
+                            arr[i+1][j].innerHTML = 0;
+                            arr[i+1][j].className = '';
+                            top();
+                            bOff = true;
+
+                        }
+
+                    }
+
+                }
+
+            }
+            function bmerge(){
+
+                for(var i=arr.length-1; i>0; i--){
+
+                    for(var j=0; j<arr[i].length; j++){
+
+                        if(arr[i][j].innerHTML == arr[i-1][j].innerHTML&&arr[i][j].innerHTML != 0){
+
+                            arr[i][j].innerHTML *= 2;
+                            arr[i][j].className = 'c' + arr[i][j].innerHTML;
+                            arr[i-1][j].innerHTML = 0;
+                            arr[i-1][j].className = '';
+                            bottom();
+                            bOff = true;
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+        };
+
+    </script>
+</head>
+<body>
+<div class="clearfix" id="box">
+    <ul>
+        <li>0</li>
+        <li>0</li>
+        <li>0</li>
+        <li>0</li>
+    </ul>
+    <ul>
+        <li>0</li>
+        <li>0</li>
+        <li>0</li>
+        <li>0</li>
+    </ul>
+    <ul>
+        <li>0</li>
+        <li>0</li>
+        <li>0</li>
+        <li>0</li>
+    </ul>
+    <ul>
+        <li>0</li>
+        <li>0</li>
+        <li>0</li>
+        <li>0</li>
+    </ul>
+</div>
+</body>
+</html>
