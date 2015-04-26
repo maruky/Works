@@ -3,414 +3,10 @@
 <head>
     <meta charset="utf-8">
     <title>0</title>
-    <script src="jquery-1.11.2.min.js"></script>
-    <script src="class.js"></script>
-    <script src="data.js"></script>
-
-    <style>
-    *{
-        margin: 0;
-        padding: 0;
-    }
-    input{
-        border: none;
-        outline: none;
-    }
-    em{
-        font-style: normal;
-    }
-    .clearfix:before, .clearfix:after{
-        display: table;
-        content: "";
-    }
-    .clearfix:after{
-        clear: both;
-    }
-    .clearfix{
-        *zoom: 1;
-    }
-    .fl{
-        float: left;
-    }
-    .fr{
-        float: right;
-    }
-    html, body{
-        width: 100%;
-        height: 100%;
-    }
-    ul{
-        list-style: none;
-    }
-    body{
-        background: url(images/bg.jpg) 0 0;
-        background-size: 100% 100%;
-        font-family: Microsoft YaHei;
-    }
-    .container{
-        width: 100%;
-        height: 100%;
-        position: relative;
-        overflow: hidden;
-    }
-    .deskTop{
-        position: relative;
-        font-size: 12px;
-        margin: 5px 15px 5px 0;
-/*        background-color: pink;
-*/      color: #ffe;
-    }
-    .icon{
-        position: absolute;
-        text-align: center;
-        width: 80%; 
-        height: 80%;
-        left: 0;
-        top: 0;
-        z-index: 9;
-        border: 1px solid transparent;
-        box-sizing: border-box;
-    }
-    .icon>span{
-        color: #000;
-        display: inline-block;
-        width: 100%;
-    }
-    .icon img{
-        width: 60%;
-        height: 60%;  
-        padding-top: 3px;  
-    }
-    .icon1{
-        background-color: rgba(135, 176, 230, 0.1);
-        border-color: #B0CFF2;
-    }
-    .icon2{
-        background-color: rgba(94, 150, 230, 0.2);
-        border-color: #B0CFF2;
-    }
-    #box{
-        position: absolute;
-        background-color: red;
-        width: 85px;
-        height: 85px;
-        z-index: 1;
-    }
-    .box{
-        position: absolute;
-        list-style-type: none;
-    }
-    .box li{
-        position: absolute;
-/*        border: 1px solid #000;
-*/        width: 85px;
-        height: 85px;
-        color: #000;
-    }
-    .taskbar{
-        width: 100%;
-        height: 40px;
-        position: absolute;
-        bottom: 1px;
-        left: 0;
-    }
-    .bgBar{
-        background-color: rgba(196, 196, 196, 0.7);
-        position: absolute;
-        width: 100%;
-        height: 40px;
-        border-top: 1px solid #bbb;
-    }
-    .start{
-        float: left;
-        position: relative;
-        z-index: 1;
-        margin-right: 8px;
-    }
-    .startBtn{
-        width: 50px;
-        height: 40px;
-        background: url(images/start.png) no-repeat 0 0;
-    }
-    .border{
-        width: 10px;
-        height: 40px;
-        background: url(images/border.png) 0 0;
-    }
-    .startBtn:hover{
-        background: url(images/start1.png) no-repeat 0 0;
-    }
-    .taskbar img{
-        width: 36px;
-        height: 36px;
-        float: left;
-        position: relative;
-        padding: 2px 20px;
-        z-index: 1;
-    }
-    .fixMask{
-        width: 105px;
-        height: 20px;
-        border: 1px solid #767676;
-        position: absolute;
-        top: 50%;
-        left: 100%;
-        margin-top: -10px;
-        font-size: 12px;
-        display: none;
-        line-height: 20px;
-        text-indent: 10px;
-        background: url(images/mask.png) 2px 1px no-repeat #fff;
-    }
-    .fixMask span{
-        color: #0033cc;
-    }
-    .fixMask em{
-        color: #000066;
-        font-style: normal;
-        margin-left: 2px;
-    }
-    #pop1{
-        width: 970px;
-        height: 514px;
-        background-color: #fff;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        margin-left: -485px;
-        margin-top: -320px;
-      /*  display: none;*/
-        z-index: 33;
-        border-width: 30px 10px 10px;
-        border-style: solid;
-        border-color: rgb(243, 213, 106);
-    }
-    #pop1 .header{
-        width: 100%;
-        overflow: hidden;
-        background-color: rgb(243, 213, 106);
-        margin-top: -30px;
-        text-align: center;
-    }
-    #pop1 .h-left{
-        padding: 6px 0;
-    }
-    #pop1 .h-left .hl{
-        width: 17px;
-        height: 17px;
-        background-image: url(images/1.png);
-        background-repeat: no-repeat;
-        float: left;
-        padding-right: 8px;
-    }
-    #pop1 .hl-1{
-        background-position: 0 -42px;
-    }
-    #pop1 .hl-2{
-        background-position: 0 -20px;
-    }
-    #pop1 .hl-3{
-        background-position: 0 0px;
-    }
-    #pop1 .hl-4{
-        background-position: 0 -60px;
-    }
-    #pop1 .h-left-2{
-        padding-left: 8px;
-        border-left: 1px solid #9d8d52;
-        border-right: 1px solid #9d8d52;
-    }
-    #pop1 .h-name{
-        line-height: 30px;
-        margin-left: -80px;
-    }
-    #pop1 .h-right{
-        width: 92px;
-        height: 30px;
-    }
-
-    #pop1 span{
-        width: 26px;
-        height: 22px;
-        margin-right: 1px;
-        /*background-color: blue;*/
-    }
-    #pop1 em{
-        display: inline-block;
-        margin-top: -2px;
-    }
-    #pop1 .min  em{
-        width: 8px;
-        height: 2px;
-        border-top: 2px solid #000;
-    }
-    #pop1 .max em{
-        width: 8px;
-        height: 6px;
-        border: 1px solid #000;
-        border-top-width: 2px;
-    }
-    #pop1 .close{
-        width: 38px;
-        background-color: #c75050;
-        color: #fff;
-        margin-right: 0;
-    }
-    #pop1 .active{
-        background-color: #3665b3; 
-    }
-    #pop1 .active em{
-        border-color: #fff;
-    }
-    #pop1 .close.active{
-        background-color: rgb(224, 67, 67);
-    }
-    #pop1 .menu{
-        height: 25px;
-        border-bottom: 1px solid #dadbdc;
-    }
-    #pop1 .menuList{
-        height: 22px;
-        line-height: 22px;
-        font-size: 12px;
-        color: #3c3c3c;
-    }
-    #pop1 .menuList li:nth-child(1){
-        background-color: #1979ca;
-        color: #fff;
-        z-index: 1;
-        position: relative;
-    }
-    #pop1 .menuList li:hover{
-        border-left: 1px solid #eee;
-        border-right: 1px solid #eee;
-        margin: 0 -1px;
-    }
-    #pop1 .menuList li:nth-child(1):hover{
-        border: none;
-        margin: 0;
-        background-color: rgb(41, 140, 225);
-    }
-    #pop1 .menuList li{
-        float: left;
-        padding: 0 16px;
-    }
-    #pop1 .menu-r span{
-        float: left;
-        width: 22px;
-        height: 22px;
-        border: 1px solid #fff;
-        background-image: url(images/1.png);
-        background-repeat: no-repeat;
-    }
-    #pop1 .menu-r span:hover{
-        border: 1px solid #6AB5FF;
-        background-color: #DFEFFF;
-    }
-    #pop1 .menu-r .pull{
-        background-position: 6px -320px;
-    }
-    #pop1 .menu-r .qus{
-        background-position: -41px -321px;
-    }
-    #pop1 .cont{
-        width: 100%;
-        height: 500px;
-    }
-    #pop1 .cont-l{
-        width: 25%;
-        height: 100%;
-    }
-    #pop1 .searchBox{
-        margin-top: 5px;    
-        overflow: hidden;
-        margin-left: 5px;
-    }
-    #pop1 .search{
-        height: 18px;
-        border: 1px solid #ddd;
-    }
-    #pop1 .search:nth-child(2){
-        margin-right: 5px;
-    }
-    #pop1 .search:nth-child(2) input{
-        width: 820px;
-        height: 18px;
-        float: left;
-        line-height: 18px;
-    }
-    #pop1 .search:nth-child(3) input{
-        width: 100px;
-        height: 18px;
-        float: left;
-        line-height: 18px;
-    }
-    #pop1 .searchBox em{
-        float: left;
-        margin-right: 5px;
-        height: 17px;
-        width: 17px;
-        background: url(images/1.png) no-repeat 0 -40px;
-    }
-    .sliding{
-        width: 100%;
-        height: 100%;   
-        position: absolute;
-        top: 0;
-        z-index: 70;
-        display: none;
-        opacity: .9;
-    }
-    .sliding .right{
-        height: 100%;
-        width: 0;
-        background-color: #10100E;
-        position: absolute;
-        right: 0;
-        top: 0;
-    }
-    .sliding .left{
-        height: 140px;
-        width: 33%;
-        background-color: #10100E;
-        position: absolute;
-        display: none;
-        left: 50px;
-        bottom: 50px;
-    }
-    .slidList {
-        height: 500px;
-        width: 100%;
-        position: absolute;
-        left: 0;
-        top: 50%;
-        margin-top: -250px;
-    }
-    .slidList li{
-        height: 20%;
-        width: 100%;
-        background-image: url('images/2.png');
-        background-repeat: no-repeat;
-    }
-    .slidList li:nth-child(1){
-        background-position: 25px 0;
-    }
-    .slidList li:nth-child(2){
-        background-position: -40px 0;
-    }
-    .slidList li:nth-child(3){
-        background-position: -118px 0;
-    }
-    .slidList li:nth-child(4){
-        background-position: -192px 0;
-    }
-    .slidList li:nth-child(5){
-        background-position: -268px 0;
-    }
-    .leftInfo{
-        padding: 10px;
-    }
-</style>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/jquery-1.11.2.min.js"></script>
+    <script src="js/class.js"></script>
+    <script src="js/data.js"></script>
 </head>
 <script>
     var x, y;
@@ -479,36 +75,52 @@
         });
         /***********************构造函数*****************/
 
-        function Pop(id, obj){
+        function Pop(id){
             this.id = id;
-            this.obj = obj;
+            this.creatPop(dataPop[this.id], oCont);
+            $(this.obj).fadeIn(200);
+            this.close();
         }
         Pop.prototype = new Drag();
         Pop.prototype.creatPop =  function(json, parent){
-            console.log();
             for(attr in json){
                 var obj = document.createElement(json[attr]['tag']);
                 if(parent === oCont){
                     new Drag(obj).drag();
+                    this.obj = obj;
                 }
                 obj.parent = parent;
                 if(json[attr]['classes'])
                     obj.className = json[attr]['classes'].join(' ');
-                if(json[attr]['id'])
-                    obj.id = json[attr]['id'].join(' ');
                 if(json[attr]['innerHTML']){
-                    console.log(obj.parent);
                     obj.innerHTML = json[attr]['innerHTML']
                 }
+                if(json[attr]['id'])
+                    obj.id = json[attr]['id'].join(' ');
+                
                 obj.parent.appendChild(obj);
                 if(json[attr]['child']){
-                    console.log('p');
                     obj.parent = obj;
                     this.creatPop(json[attr]['child'], obj.parent);
                 }
                
             }
+
         }    
+        Pop.prototype.close = function(){
+            // $(this).detach();
+            console.log(this.obj);
+            $(this.obj).on('click', function(e){
+                console.log(e.target.className);
+                if(e.target.className.indexOf('close') != -1){
+                    $(this).fadeOut(200, function(){
+                        $(this).detach();
+                    });
+                }
+                
+            });
+            return false;
+        }
         function DeskTop(obj){
             this.obj = obj;
         }
@@ -552,10 +164,14 @@
 
             fn: function(oDiv){
                 var _this = this;
-                oDiv.ondblclick = function(){
-                    if(this.innerHTML.indexOf('我的电脑')){
-                        console.log(new Pop());
-                        new Pop().creatPop(dataPop[this.popId], oCont);
+                oDiv.ondblclick = function(){    
+
+                    if(this.innerHTML.indexOf('我的电脑') != -1){
+                      new Pop(this.popId);
+                    }
+                    if(this.innerHTML.indexOf('新建文件夹') != -1){
+                        var strId = new Pop(this.popId).id;
+                        $('#'+strId +' .cont-r').html('<span>这个文件夹是空的</span>');
                     }
                 };
                 oDiv.onmouseenter= function(){
@@ -592,7 +208,6 @@
                         }
                         removeClass(this, 'icon1');
                         sel.push(this);
-                        console.log(sel);
                         addClass(this, 'icon2');
                         this.onmouseleave = null;
 
@@ -629,7 +244,6 @@
                             
                             obj.style.top = e.clientY - disY + 'px';
                             obj.style.left = e.clientX - disX + 'px';
-                            console.log(sel);
                         };
                         document.onmouseup = function(ev){
                             var e = ev || event;
@@ -713,11 +327,20 @@
                 return false;
             }
         }
-        // var pop = new Pop('',oPop);
-        // console.log(pop.drag());
-      
         var oDesk = new DeskTop();
         oDesk.creatDesk(dataIcon);
+        $('.startBtn').data('popId', 'pop2');
+        $('.startBtn').on('click', function(){
+            new Pop($(this).data('popId'));
+            $('#pop2 .head').fadeIn('300', function(){
+            });
+            $('#pop2 .desk').fadeIn(500);
+            $('#pop2 .desk').on('click', function(){
+                $('#pop2').fadeOut('200', function(){
+                    $(this).remove();
+                });
+            })
+        })
     /********************/
         document.onkeydown = function(ev){
             var e = ev || event;
@@ -793,6 +416,7 @@
 </script>
 <body>
     <div class="container clearfix" id="container">
+        <div class="startBtn fl"></div>
         <div class="fixMask" id="fixMask">
             <span>固定到</span>
             <em>任务栏</em>
@@ -802,9 +426,9 @@
         <div class="taskbar" id="taskbar">
             <div class="bgBar"></div>
             <div class="start">
-                <div class="startBtn fl"></div>
-                <div class="border fl"></div>
+                
             </div>
+            <div class="border fl"></div>
             <div class="maskIcon fl" id="maskIcon">
                 
             </div>
@@ -849,7 +473,41 @@
             
             <div class="cont">
                 <div class="cont-l fl">
+                    <div class="col">
+                        <h3><span></span><i>收藏夹</i></h3>
+                       
+                    </div>
+                    <div class="com">
+                        <h3><span></span><i>这台电脑</i></h3>
+                       
+                    </div>
+                    <div class="net">
+                        <h3><span></span><i>网络</i></h3>
+                        
+                    </div>
+                </div>
+                <div class="cont-r fl">
+                    <div class="cDisk fl">
+                    </div>
                     
+                </div>
+            </div>
+        </div> -->
+       <!--  <div id="pop2">
+            <div class="popCont">
+                <div class="head">
+                    <h3 class="fl">开始</h3>
+                    <ul class="h-list fr">
+                        <li>marukyFish</li>
+                        <li class="userPhoto"></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </div>
+                <div class="cont">
+                    <div class="desk">
+                        <span>桌面</span>
+                    </div>
                 </div>
             </div>
         </div> -->
