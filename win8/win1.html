@@ -1,0 +1,535 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>0</title>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/jquery-1.11.2.min.js"></script>
+    <script src="js/class.js"></script>
+    <script src="js/data.js"></script>
+</head>
+<script>
+    var x, y;
+    var arr = [];
+    var sel = [];
+    var clone = true;
+    var rem =parseInt(document.documentElement.getBoundingClientRect().width/16);
+    x = 16;
+    y = parseInt((document.documentElement.getBoundingClientRect().height-40)/rem);
+    if(y <= parseInt(Math.ceil(dataIcon.length/x))){
+        y = parseInt(Math.ceil(dataIcon.length/x));
+    }
+    window.onload = function(){
+    /*********************************/
+        var mask = true;
+        
+        window.onresize = function (){
+            rem =parseInt(document.documentElement.getBoundingClientRect().width/16);
+            x = 16;
+            y = parseInt((document.documentElement.getBoundingClientRect().height-40)/rem);
+            if(y <= parseInt(Math.ceil(dataIcon.length/x))){
+                y = parseInt(Math.ceil(dataIcon.length/x));
+            }
+            oUl.innerHTML = null;
+            oDesk.creatDesk(dataIcon);
+        }
+        //右键
+        var oCont = document.getElementById('container')
+        var Desk = document.getElementById('deskTop');
+        var oUl = document.createElement('ul');
+        var oTask = document.getElementById('taskbar');
+        var oMaskIcon = document.getElementById('maskIcon');
+        var fixMask = document.getElementById('fixMask');
+        var oPop = document.getElementById('pop1');
+        var oSr = $('.sliding');
+        var oSr_r = $('.sliding .right');
+
+        oUl.className = 'box';
+        className(document, 'deskTop').appendChild(oUl);
+        function sliMove(e){
+           
+            if(e.clientY < 100 && e.clientX > this.body.offsetWidth-20){
+                oSr.css('display', 'block');
+                oSr_r.animate({
+                    'width': '6%' 
+                }, 300, function(){
+                    $('.sliding .left').css('display', 'block')
+                })
+            }
+        }
+        $(document).on('mousemove', function(e){
+            sliMove.call(document, e);
+        });
+        oSr_r.on('mousemove', function(){
+            return false;
+        });
+        oSr_r.on('mouseleave', function(e){
+
+            $(this).css('width', 0);
+            oSr.css('display', 'none');
+            $(document).on('mousemove', function(e){
+
+                    sliMove.call(document, e);
+            });
+            return false;
+        });
+        /***********************构造函数*****************/
+
+        function Pop(id){
+            this.id = id;
+            this.creatPop(dataPop[this.id], oCont);
+            $(this.obj).fadeIn(200);
+            this.close();
+        }
+        Pop.prototype = new Drag();
+        Pop.prototype.creatPop =  function(json, parent){
+            for(attr in json){
+                var obj = document.createElement(json[attr]['tag']);
+                if(parent === oCont){
+                    new Drag(obj).drag();
+                    this.obj = obj;
+                }
+                obj.parent = parent;
+                if(json[attr]['classes'])
+                    obj.className = json[attr]['classes'].join(' ');
+                if(json[attr]['innerHTML']){
+                    obj.innerHTML = json[attr]['innerHTML']
+                }
+                if(json[attr]['id'])
+                    obj.id = json[attr]['id'].join(' ');
+                
+                obj.parent.appendChild(obj);
+                if(json[attr]['child']){
+                    obj.parent = obj;
+                    this.creatPop(json[attr]['child'], obj.parent);
+                }
+               
+            }
+
+        }    
+        Pop.prototype.close = function(){
+            // $(this).detach();
+            console.log(this.obj);
+            $(this.obj).on('click', function(e){
+                console.log(e.target.className);
+                if(e.target.className.indexOf('close') != -1){
+                    $(this).fadeOut(200, function(){
+                        $(this).detach();
+                    });
+                }
+                
+            });
+            return false;
+        }
+        function DeskTop(obj){
+            this.obj = obj;
+        }
+        DeskTop.prototype = {
+            creatDesk: function(dataIcon){
+                for(var i=0; i<x; i++){
+                    arr[i] = [];
+                    for(var j=0; j<y; j++){
+                        var oLi =  document.createElement('li');
+                        oLi.style.width = rem+'px';
+                        oLi.style.height = rem+'px';
+                        oLi.style.left = i*rem+'px';
+                        oLi.style.top = j*rem+'px';
+                        // oLi.innerHTML = i+'/'+j;
+                        oLi.i = i;
+                        oLi.j = j;
+                        arr[i].push(oLi);
+                        oUl.appendChild(oLi);
+                    }
+                }
+                var j = 0;
+                for(attr in dataIcon){
+                    var oDiv = document.createElement('div');
+                    var img = document.createElement('img');
+                    var oSpan = document.createElement('span');
+
+                    // new Drag(oDiv).drag();
+                    oDiv.className = 'icon';
+                    oDiv.popId = dataIcon[attr]['popId'];
+                    oDiv.appendChild(img);
+                    img.src = dataIcon[attr]['softSrc'];
+                    oSpan.innerHTML = dataIcon[attr]['softName'];
+                    oDiv.appendChild(oSpan);
+                    
+                    this.fn(oDiv);
+                    if(attr % (y) == 0 && attr != 0)
+                        j++;
+                    arr[j][attr%y].appendChild(oDiv);
+                }
+            },
+
+            fn: function(oDiv){
+                var _this = this;
+                oDiv.ondblclick = function(){    
+
+                    if(this.innerHTML.indexOf('我的电脑') != -1){
+                      new Pop(this.popId);
+                    }
+                    if(this.innerHTML.indexOf('新建文件夹') != -1){
+                        var strId = new Pop(this.popId).id;
+                        $('#'+strId +' .cont-r').html('<span>这个文件夹是空的</span>');
+                    }
+                };
+                oDiv.onmouseenter= function(){
+                    document.clone = true;
+                    this.onmouseleave = function(){
+                        removeClass(this, 'icon1');
+                    }; 
+                    addClass(this, 'icon1');
+                    this.onclick = function(ev){
+                        var e = ev || event;
+                        var disX = e.clientX;
+                        var _this = this;
+                        e.cancelBubble = true;
+                        if(document.shift && sel.length){
+                            if(sel.length == 1 && sel[0] == this){
+                                return;
+                            }
+                            if(this.j > sel[sel.length-1].j || this.j == sel[sel.length-1].j && this.i >= sel[sel.length-1].i)
+                                selIcon(sel[0], this);
+                            else if(this.j > sel[0].j || this.j == sel[0].j && this.i >= sel[0].i){
+                                for(var i=0; i<sel.length; i++){
+                                    removeClass(sel[i], 'icon2');
+                                }
+                                selIcon(sel[0], this);
+                            }else{
+                                selIcon(this, sel[0]);
+                            }
+
+                        }else {
+                            for(var n=0; n<sel.length; n++){
+                                removeClass(sel[n], 'icon2');
+                            }
+                            sel.length = 0;
+                        }
+                        removeClass(this, 'icon1');
+                        sel.push(this);
+                        addClass(this, 'icon2');
+                        this.onmouseleave = null;
+
+                    };
+                    this.onmousedown = function(ev){
+                        var e = ev || event;
+                        var disX = e.clientX - this.offsetLeft;
+                        var disY = e.clientY - this.offsetTop;
+                        var _this = this;
+                        var clone_obj = _this.cloneNode(true);
+                        document.onmousemove = function(ev){
+                            var e = ev || event;
+
+                            if(clone){
+                                clone = false;
+                                _this.parentNode.appendChild(clone_obj);     
+                            } 
+                            if(_this.parentNode.children.length > 1){
+                                obj = clone_obj;
+                                obj.style.opacity = 0.6;
+                                removeClass(obj, 'icon1');
+                                removeClass(obj, 'icon2');
+                            }
+                            else{
+                                console.log(1);
+                                obj = _this;
+                            }               
+                            if(obj.getBoundingClientRect().bottom >= oTask.getBoundingClientRect().bottom){
+                                obj.appendChild(fixMask);
+                                fixMask.style.display = 'block';
+                            }else{
+                                fixMask.style.display = 'none';
+                            }
+                            
+                            obj.style.top = e.clientY - disY + 'px';
+                            obj.style.left = e.clientX - disX + 'px';
+                        };
+                        document.onmouseup = function(ev){
+                            var e = ev || event;
+                            this.onmousemove = null;
+                            var obj = null;
+                            fixMask.style.display = 'none';
+                            if(_this.parentNode.children.length > 1){
+                                obj = clone_obj;
+                            }else{
+                                obj = _this;
+                            }
+                            if(obj.getBoundingClientRect().bottom >= oTask.getBoundingClientRect().top){
+                                _this.parentNode.removeChild(clone_obj);
+                                clone = true;
+                                if(!_this.mask){
+                                    var c_icon = _this.getElementsByTagName('img')[0].cloneNode(true);
+                                    oMaskIcon.appendChild(c_icon);
+                                }
+                                _this.mask = true; //已经添加到任务栏
+                                _this.style.left = 0;
+                                _this.style.top = 0;
+                                _this.onclick = null;
+                                return; 
+                            }
+                            _this.j = Math.round((parseInt(obj.getBoundingClientRect().top))/rem);
+                            _this.i = Math.round((parseInt(obj.getBoundingClientRect().left))/rem);
+                            if(_this.parentNode.children.length > 1){
+                                _this.parentNode.removeChild(clone_obj);
+                                clone = true;
+                            }
+                            if(_this.j <= 0)
+                                _this.j = 0;
+                            if(_this.j > y-1)
+                                _this.j = y-1;
+                            if(_this.i <= 0)
+                                _this.i = 0;
+                            if(_this.i >= x-1)
+                                _this.i = x-1;
+
+                            if(_this != arr[_this.i][_this.j].children[0] && arr[_this.i][_this.j].children.length != 0){
+                                swap(arr, _this.i, _this.j);
+                            }       
+                            arr[_this.i][_this.j].appendChild(_this);        
+                            _this.style.left = 0;
+                            _this.style.top = 0;
+                            document.onmouseup = null; 
+                           
+                        };          
+                        return false;
+                    }
+                };
+                document.onclick = function(){
+                   
+                    for(var i=0; i<sel.length; i++){
+                        removeClass(sel[i], 'icon2')
+                    }
+                    sel = [];
+                };    
+            }
+        };
+        function Drag(obj){
+            this.obj = obj; 
+        }
+        Drag.prototype.drag = function(){
+            this.obj.onmousedown = function(ev){
+                var e = ev || event;
+                var disX = e.clientX - this.offsetLeft;
+                var disY = e.clientY - this.offsetTop;
+                var _this = this;
+
+                document.onmousemove = function(ev){
+                    var e = ev || event;                           
+                  
+                    _this.style.top = e.clientY - disY + 'px';
+                    _this.style.left = e.clientX - disX + 'px';
+                    _this.style.margin = 0;
+                };
+                document.onmouseup = function(){
+                    this.onmousemove = null;
+                };          
+                return false;
+            }
+        }
+        var oDesk = new DeskTop();
+        oDesk.creatDesk(dataIcon);
+        $('.startBtn').data('popId', 'pop2');
+        $('.startBtn').on('click', function(){
+            new Pop($(this).data('popId'));
+            $('#pop2 .head').fadeIn('300', function(){
+            });
+            $('#pop2 .desk').fadeIn(500);
+            $('#pop2 .desk').on('click', function(){
+                $('#pop2').fadeOut('200', function(){
+                    $(this).remove();
+                });
+            })
+        })
+    /********************/
+        document.onkeydown = function(ev){
+            var e = ev || event;
+            if(e.keyCode == 16){
+                this.shift = true;
+            }
+        };
+        document.onkeyup = function(ev){
+            var e = ev || event;
+            if(e.keyCode == 16){
+                this.shift = false;
+            }
+        };
+    };
+    //拖拽
+    function selIcon(start, end){
+        sel = [];
+        var j = start.j;
+        for(var k=start.i; k<x; k++){
+
+            if((k+1)%x == 0){
+                k = 0;
+                j++;
+                if(j >= y)
+                    break;
+            }
+            if(arr[k][j].children[0]){
+                sel.push(arr[k][j].children[0]);
+                if(arr[k][j].children[0] == end){
+                    break;
+                }
+                
+                console.log(sel);
+                addClass(arr[k][j].children[0], 'icon2');
+            }
+        }
+    }
+    function child(obj){
+        var num = 0;
+        for(var i=0; i<obj.length; i++){
+            if(obj[i].children)
+                num++;
+        }
+        return num;
+    }
+    function swap(arr, i, j){
+        var oDiv = arr[i][j].children[0];
+        if(arr[i][j].nextSibling.children.length != 0){
+            swap(arr, arr[i][j].nextSibling.i, arr[i][j].nextSibling.j);
+        } 
+        arr[arr[i][j].nextSibling.i][arr[i][j].nextSibling.j].appendChild(oDiv);
+        oDiv.style.left = 0;
+        oDiv.style.top = 0;
+    }
+    function creatIcon(oDesk, dataIcon){
+        for(var i=0; i<dataIcon.length; i++){
+            var oDiv = document.createElement('div');
+            var img = document.createElement('img');
+            var oSpan = document.createElement('span');
+
+            oDiv.className = 'icon';
+            oDiv.appendChild(img);
+            img.style.width = parseInt(rem*0.73)+'px';
+            img.style.height = parseInt(rem*0.73)+'px';
+    
+            img.src = dataIcon[i]['softSrc'];
+            oSpan.innerHTML = dataIcon[i]['softName'];
+            oDiv.appendChild(oSpan);
+           
+            oDesk.appendChild(oDiv);
+        } 
+    }
+</script>
+<body>
+    <div class="container clearfix" id="container">
+        <div class="startBtn fl"></div>
+        <div class="fixMask" id="fixMask">
+            <span>固定到</span>
+            <em>任务栏</em>
+        </div>
+        <div class="deskTop" id="deskTop">   
+        </div>
+        <div class="taskbar" id="taskbar">
+            <div class="bgBar"></div>
+            <div class="start">
+                
+            </div>
+            <div class="border fl"></div>
+            <div class="maskIcon fl" id="maskIcon">
+                
+            </div>
+        </div>
+      <!--   <div class="pop" id='pop1'>   
+            <div class="header">
+                <div class="h-left fl">
+                    <span class="hl hl-1"></span>
+                    <div class="h-left-2 fl">
+                        <span class="hl hl-2"></span>
+                        <span class="hl hl-3"></span>
+                        <span class="hl hl-4"></span>
+                    </div>                
+                </div>
+                <span class="h-name">这台电脑</span>
+                <div class="h-right fr">
+                    <span class="min active fl"><em></em></span>
+                    <span class="max active fl"><em></em></span>
+                    <span class="close active fl"><em>x</em></span>
+                </div>
+            </div>    
+            <div class="menu">
+                <ul class="menuList fl">
+                    <li>文件</li>
+                    <li>计算机</li>
+                    <li>查看</li>
+                </ul>
+                <div class="menu-r fr">
+                    <span class="pull"></span>
+                    <span class="qus"></span>
+                </div>
+            </div>
+            <div class="searchBox">
+                <em></em>
+                <div class="search fl">
+                    <input type="text" value="我的电脑">
+                </div>
+                <div class="search fl">
+                    <input type="text" value="">
+                </div>
+            </div>
+            
+            <div class="cont">
+                <div class="cont-l fl">
+                    <div class="col">
+                        <h3><span></span><i>收藏夹</i></h3>
+                       
+                    </div>
+                    <div class="com">
+                        <h3><span></span><i>这台电脑</i></h3>
+                       
+                    </div>
+                    <div class="net">
+                        <h3><span></span><i>网络</i></h3>
+                        
+                    </div>
+                </div>
+                <div class="cont-r fl">
+                    <div class="cDisk fl">
+                    </div>
+                    
+                </div>
+            </div>
+        </div> -->
+       <!--  <div id="pop2">
+            <div class="popCont">
+                <div class="head">
+                    <h3 class="fl">开始</h3>
+                    <ul class="h-list fr">
+                        <li>marukyFish</li>
+                        <li class="userPhoto"></li>
+                        <li></li>
+                        <li></li>
+                    </ul>
+                </div>
+                <div class="cont">
+                    <div class="desk">
+                        <span>桌面</span>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+        <div class="sliding">
+            <div class="right">
+                <ul class="slidList">
+                    <li><span></span></li>
+                    <li><span></span></li>
+                    <li><span></span></li>
+                    <li><span></span></li>
+                    <li><span></span></li>
+                </ul>
+            </div>
+            <div class="left">
+                <div class="leftInfo">
+                    <div class="left-1">
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div>          
+</body>
+</html>

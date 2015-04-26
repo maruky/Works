@@ -1,0 +1,574 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>maruky</title>
+    <script src="class.js"></script>
+    <script src="data.js"></script>
+    <style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    .clearfix:before, .clearfix:after{
+        display: table;
+        content: "";
+    }
+    .clearfix:after{
+        clear: both;
+    }
+    .clearfix{
+        *zoom: 1;
+    }
+    .fl{
+        float: left;
+    }
+    html, body{
+        width: 100%;
+        height: 100%;
+    }
+    body{
+/*        background: url(images/bg.jpg) 0 0;
+*/        background-size: 100% 100%;
+        font-family: Microsoft YaHei;
+    }
+    .container{
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+    }
+    .deskTop{
+        position: relative;
+        font-size: 12px;
+        margin: 5px 15px 5px 0;
+/*        background-color: pink;
+*/      color: #ffe;
+    }
+    .icon{
+        position: absolute;
+        text-align: center;
+        width: 80%; 
+        height: 80%;
+        left: 0;
+        top: 0;
+        z-index: 9;
+        border: 1px solid transparent;
+        box-sizing: border-box;
+    }
+    .icon>span{
+        color: #000;
+        display: inline-block;
+        width: 100%;
+    }
+    .icon img{
+        width: 60%;
+        height: 60%;  
+        padding-top: 3px;  
+    }
+    .icon1{
+        background-color: rgba(135, 176, 230, 0.1);
+        border-color: #B0CFF2;
+    }
+    .icon2{
+        background-color: rgba(94, 150, 230, 0.2);
+        border-color: #B0CFF2;
+    }
+    #box{
+        position: absolute;
+        background-color: red;
+        width: 85px;
+        height: 85px;
+        z-index: 1;
+    }
+    .box{
+        position: absolute;
+        list-style-type: none;
+    }
+    .box li{
+        position: absolute;
+/*        border: 1px solid #000;
+*/        width: 85px;
+        height: 85px;
+        color: #000;
+    }
+    .taskbar{
+        width: 100%;
+        height: 40px;
+        position: absolute;
+        bottom: 1px;
+        left: 0;
+    }
+    .bgBar{
+        background-color: rgba(196, 196, 196, 0.7);
+        position: absolute;
+        width: 100%;
+        height: 40px;
+        border-top: 1px solid #bbb;
+    }
+    .start{
+        float: left;
+        position: relative;
+        z-index: 1;
+        margin-right: 8px;
+    }
+    .startBtn{
+        width: 50px;
+        height: 40px;
+        background: url(images/start.png) no-repeat 0 0;
+    }
+    .border{
+        width: 10px;
+        height: 40px;
+        background: url(images/border.png) 0 0;
+    }
+    .startBtn:hover{
+        background: url(images/start1.png) no-repeat 0 0;
+    }
+    .taskbar img{
+        width: 36px;
+        height: 36px;
+        float: left;
+        position: relative;
+        padding: 2px 20px;
+        z-index: 1;
+    }
+    .fixMask{
+        width: 105px;
+        height: 20px;
+        border: 1px solid #767676;
+        position: absolute;
+        top: 50%;
+        left: 100%;
+        margin-top: -10px;
+        font-size: 12px;
+        display: none;
+        line-height: 20px;
+        text-indent: 10px;
+        background: url(images/mask.png) 2px 1px no-repeat #fff;
+    }
+    .fixMask span{
+        color: #0033cc;
+    }
+    .fixMask em{
+        color: #000066;
+        font-style: normal;
+        margin-left: 2px;
+    }
+    .pop{
+        width: 970px;
+        height: 514px;
+        background-color: #EEEEEE;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin-left: -485px;
+        margin-top: -320px;
+       /* display: none;*/
+        z-index: 33;
+        border-width: 30px 10px 10px;
+        border-style: solid;
+        border-color: rgb(243, 213, 106);
+    }
+    #pop1 .header{
+        width: 100%;
+        height: 14px;
+        line-height: 30px;
+        background-color: rgb(243, 213, 106);
+        margin-top: -30px;
+        text-align: center;
+    }
+    #pop1 .h-left{
+        padding: 8px 0;
+    }
+    #pop1 .h-left .hl{
+        width: 17px;
+        height: 17px;
+        background-image: url(images/1.png);
+        background-repeat: no-repeat;
+        float: left;
+        padding-right: 8px;
+    }
+    #pop1 .hl-1{
+        background-position: 0 -42px;
+    }
+    #pop1 .hl-2{
+        background-position: 0 -20px;
+    }
+    #pop1 .hl-3{
+        background-position: 0 0px;
+    }
+    #pop1 .hl-4{
+        background-position: 0 -60px;
+    }
+    #pop1 .h-left-2{
+        padding-left: 8px;
+        border-left: 1px solid #9d8d52;
+        border-right: 1px solid #9d8d52;
+    }
+    #pop1 .h-name{
+        line-height: 30px;
+        margin-left: -80px;
+    }
+</style>
+</head>
+    <script>
+    var x, y;
+    var arr = [];
+    var sel = [];
+    var clone = true;
+    var rem =parseInt(document.documentElement.getBoundingClientRect().width/16);
+    x = 16;
+    y = parseInt((document.documentElement.getBoundingClientRect().height-40)/rem);
+    if(y <= parseInt(Math.ceil(dataIcon.length/x))){
+        y = parseInt(Math.ceil(dataIcon.length/x));
+    }
+    window.onload = function(){
+    /*********************************/
+        var mask = true;
+        
+        window.onresize = function (){
+            rem =parseInt(document.documentElement.getBoundingClientRect().width/16);
+            x = 16;
+            y = parseInt((document.documentElement.getBoundingClientRect().height-40)/rem);
+            if(y <= parseInt(Math.ceil(dataIcon.length/x))){
+                y = parseInt(Math.ceil(dataIcon.length/x));
+            }
+            oUl.innerHTML = null;
+            oDesk.creatDesk(dataIcon);
+        }
+        //右键
+        var oDesk = document.getElementById('deskTop');
+        var oUl = document.createElement('ul');
+        var oTask = document.getElementById('taskbar');
+        var oMaskIcon = document.getElementById('maskIcon');
+        var fixMask = document.getElementById('fixMask');
+        var oPop = document.getElementById('pop1');
+
+        oUl.className = 'box';
+        className(document, 'deskTop').appendChild(oUl);
+        /***********************构造函数*****************/
+        // function Pop(id){
+        //     this.id = id;
+        // }
+        function Pop(id, obj){
+            this.id = id;
+            this.obj = obj;
+        }
+        Pop.prototype = {
+           
+        }
+        Pop.prototype = new Drag();
+
+        function DeskTop(obj){
+            this.obj = obj;
+        }
+        DeskTop.prototype = {
+            creatDesk: function(dataIcon){
+                for(var i=0; i<x; i++){
+                    arr[i] = [];
+                    for(var j=0; j<y; j++){
+                        var oLi =  document.createElement('li');
+                        oLi.style.width = rem+'px';
+                        oLi.style.height = rem+'px';
+                        oLi.style.left = i*rem+'px';
+                        oLi.style.top = j*rem+'px';
+                        // oLi.innerHTML = i+'/'+j;
+                        oLi.i = i;
+                        oLi.j = j;
+                        arr[i].push(oLi);
+                        oUl.appendChild(oLi);
+                    }
+                }
+                var j = 0;
+                for(attr in dataIcon){
+                    var oDiv = document.createElement('div');
+                    var img = document.createElement('img');
+                    var oSpan = document.createElement('span');
+
+                    oDiv.className = 'icon';
+                    oDiv.popId = dataIcon[attr]['popId'];
+                    oDiv.appendChild(img);
+                    img.src = dataIcon[attr]['softSrc'];
+                    oSpan.innerHTML = dataIcon[attr]['softName'];
+                    oDiv.appendChild(oSpan);
+                    
+                    this.fn(oDiv);
+                    if(attr % (y) == 0 && attr != 0)
+                        j++;
+                    arr[j][attr%y].appendChild(oDiv);
+                }
+            },
+            creatPop: function(id){
+                
+            },
+            fn: function(oDiv){
+                oDiv.ondblclick = function(){
+                    if(this.innerHTML.indexOf('我的电脑')){
+                        console.log(this.popId);
+                        // creatPop(this.popId);
+                        // var pop = new Pop(this.popId, oPop);
+                    }
+                };
+                
+                oDiv.onmouseenter= function(){
+                    document.clone = true;
+                    this.onmouseleave = function(){
+                        removeClass(this, 'icon1');
+                    }; 
+                    addClass(this, 'icon1');
+                    this.onclick = function(ev){
+                        var e = ev || event;
+                        var disX = e.clientX;
+                        var _this = this;
+                        e.cancelBubble = true;
+                        if(document.shift && sel.length){
+                            if(sel.length == 1 && sel[0] == this){
+                                return;
+                            }
+                            if(this.j > sel[sel.length-1].j || this.j == sel[sel.length-1].j && this.i >= sel[sel.length-1].i)
+                                selIcon(sel[0], this);
+                            else if(this.j > sel[0].j || this.j == sel[0].j && this.i >= sel[0].i){
+                                for(var i=0; i<sel.length; i++){
+                                    removeClass(sel[i], 'icon2');
+                                }
+                                selIcon(sel[0], this);
+                            }else{
+                                selIcon(this, sel[0]);
+                            }
+                        }else {
+                            for(var n=0; n<sel.length; n++){
+                                removeClass(sel[n], 'icon2');
+                            }
+                            sel.length = 0;
+                        }
+                        removeClass(this, 'icon1');
+                        sel.push(this);
+                        addClass(this, 'icon2');
+                        this.onmouseleave = null;
+                        // console.log(sel);
+                    };
+                    this.onmousedown = function(ev){
+                        var e = ev || event;
+                        var disX = e.clientX - this.offsetLeft;
+                        var disY = e.clientY - this.offsetTop;
+                        var _this = this;
+                        var clone_obj = _this.cloneNode(true);
+
+                        document.onmousemove = function(ev){
+                            var e = ev || event; 
+                            var obj = null; 
+                            if(clone){
+                                clone = false;
+                                _this.parentNode.appendChild(clone_obj);     
+                            } 
+                            if(_this.parentNode.children.length > 1){
+                                obj = clone_obj;
+                                obj.style.opacity = 0.6;
+                                removeClass(obj, 'icon1');
+                                removeClass(obj, 'icon2');
+                            }else{
+                                obj = _this;
+                            }               
+                            if(obj.getBoundingClientRect().bottom >= oTask.getBoundingClientRect().bottom){
+                                obj.appendChild(fixMask);
+                                fixMask.style.display = 'block';
+                            }else{
+                                fixMask.style.display = 'none';
+                            }
+                          
+                            obj.style.top = e.clientY - disY + 'px';
+                            obj.style.left = e.clientX - disX + 'px';
+                        };
+                        document.onmouseup = function(ev){
+                            var e = ev || event;
+                            this.onmousemove = null;
+                            var obj = null;
+                            fixMask.style.display = 'none';
+                            if(_this.parentNode.children.length > 1){
+                                obj = clone_obj;
+                            }else{
+                                obj = _this;
+                            }
+                            if(obj.getBoundingClientRect().bottom >= oTask.getBoundingClientRect().top){
+                                _this.parentNode.removeChild(clone_obj);
+                                clone = true;
+                                if(!_this.mask){
+                                    var c_icon = _this.getElementsByTagName('img')[0].cloneNode(true);
+                                    oMaskIcon.appendChild(c_icon);
+                                }
+                                _this.mask = true; //已经添加到任务栏
+                                _this.style.left = 0;
+                                _this.style.top = 0;
+                                _this.onclick = null;
+                                return; 
+                            }
+                            _this.j = Math.round((parseInt(obj.getBoundingClientRect().top))/rem);
+                            _this.i = Math.round((parseInt(obj.getBoundingClientRect().left))/rem);
+                            if(_this.parentNode.children.length > 1){
+                                _this.parentNode.removeChild(clone_obj);
+                                clone = true;
+                            }
+                            if(_this.j <= 0)
+                                _this.j = 0;
+                            if(_this.j > y-1)
+                                _this.j = y-1;
+                            if(_this.i <= 0)
+                                _this.i = 0;
+                            if(_this.i >= x-1)
+                                _this.i = x-1;
+
+                            if(_this != arr[_this.i][_this.j].children[0] && arr[_this.i][_this.j].children.length != 0){
+                                swap(arr, _this.i, _this.j);
+                            }       
+                            arr[_this.i][_this.j].appendChild(_this);        
+                            _this.style.left = 0;
+                            _this.style.top = 0;
+                            document.onmouseup = null; 
+                            
+                        };          
+                        return false;
+                    }
+                };
+                document.onclick = function(){
+                    for(var i=0; i<sel.length; i++){
+                        removeClass(sel[i], 'icon2')
+                    }
+                    sel = [];
+                };    
+            }
+        };
+        function Drag(obj){
+            this.obj = obj; 
+        }
+        Drag.prototype.drag = function(){
+            this.obj.onmousedown = function(ev){
+                var e = ev || event;
+                var disX = e.clientX - this.offsetLeft;
+                var disY = e.clientY - this.offsetTop;
+                var _this = this;
+
+                document.onmousemove = function(ev){
+                    var e = ev || event;                           
+                  
+                    _this.style.top = e.clientY - disY + 'px';
+                    _this.style.left = e.clientX - disX + 'px';
+                    _this.style.margin = 0;
+                };
+                document.onmouseup = function(){
+                    this.onmousemove = null;
+                };          
+                return false;
+            }
+        }
+        // var pop = new Pop('',oPop);
+        // console.log(pop.drag());
+      
+        var oDesk = new DeskTop();
+        oDesk.creatDesk(dataIcon);
+    /********************/
+        document.onkeydown = function(ev){
+            var e = ev || event;
+            if(e.keyCode == 16){
+                this.shift = true;
+            }
+        };
+        document.onkeyup = function(ev){
+            var e = ev || event;
+            if(e.keyCode == 16){
+                this.shift = false;
+            }
+        };
+    };
+    //拖拽
+    function selIcon(start, end){
+        sel = [];
+        var j = start.j;
+        for(var k=start.i; k<x; k++){
+
+            if((k+1)%x == 0){
+                k = 0;
+                j++;
+                if(j >= y)
+                    break;
+            }
+            if(arr[k][j].children[0]){
+                if(arr[k][j].children[0] == end){
+                    break;
+                }
+                sel.push(arr[k][j].children[0]);
+                addClass(arr[k][j].children[0], 'icon2');
+            }
+        }
+    }
+    function child(obj){
+        var num = 0;
+        for(var i=0; i<obj.length; i++){
+            if(obj[i].children)
+                num++;
+        }
+        return num;
+    }
+    function swap(arr, i, j){
+        var oDiv = arr[i][j].children[0];
+        if(arr[i][j].nextSibling.children.length != 0){
+            swap(arr, arr[i][j].nextSibling.i, arr[i][j].nextSibling.j);
+        } 
+        arr[arr[i][j].nextSibling.i][arr[i][j].nextSibling.j].appendChild(oDiv);
+        oDiv.style.left = 0;
+        oDiv.style.top = 0;
+    }
+    function creatIcon(oDesk, dataIcon){
+        for(var i=0; i<dataIcon.length; i++){
+            var oDiv = document.createElement('div');
+            var img = document.createElement('img');
+            var oSpan = document.createElement('span');
+
+            oDiv.className = 'icon';
+            oDiv.appendChild(img);
+            img.style.width = parseInt(rem*0.73)+'px';
+            img.style.height = parseInt(rem*0.73)+'px';
+    
+            img.src = dataIcon[i]['softSrc'];
+            oSpan.innerHTML = dataIcon[i]['softName'];
+            oDiv.appendChild(oSpan);
+           
+            oDesk.appendChild(oDiv);
+        } 
+    }
+</script>
+<body>
+    <div class="container clearfix">
+        <div class="fixMask" id="fixMask">
+            <span>固定到</span>
+            <em>任务栏</em>
+        </div>
+        <div class="deskTop" id="deskTop">
+            
+        </div>
+        <div class="taskbar" id="taskbar">
+            <div class="bgBar"></div>
+            <div class="start">
+                <div class="startBtn fl"></div>
+                <div class="border fl"></div>
+            </div>
+            <div class="maskIcon fl" id="maskIcon">
+                
+            </div>
+        </div>
+       <!--  <div class="pop" id='pop1'>   
+            <div class="header">
+                <div class="h-left fl">
+                    <span class="hl hl-1"></span>
+                    <div class="h-left-2 fl">
+                        <span class="hl hl-2"></span>
+                        <span class="hl hl-3"></span>
+                        <span class="hl hl-4"></span>
+                    </div>                
+                </div>
+                <span class="h-name">这台电脑</span>
+            </div>    
+        </div> -->
+    </div>          
+</body>
+</html>
